@@ -3,6 +3,7 @@
 touch server.js
 npm init
 npm install express express-graphql graphql --save
+node server.js
 ```
 
 ### ref
