@@ -7,6 +7,9 @@ const { buildSchema } = require('graphql');
 const schema = buildSchema(`
   type Query {
     hello: String
+    quoteOfTheDay: String
+    random: Float!
+    rollThreeDice: [Int]
   }
 `);
 
@@ -15,6 +18,18 @@ const schema = buildSchema(`
 const root = {
   hello: () => {
     return 'Hello world!';
+  },
+  //quoteOfTheDay: String をスキーマで定義
+  quoteOfTheDay: () => {
+    return Math.random() < 0.5 ? "Take it easy" : "Salvation lies within";
+  },
+  //random: Float! をスキーマで定義
+  random: () => {
+    return Math.random();
+  },
+  //rollThreeDice: [Int] をスキーマで定義
+  rollThreeDice: () => {
+    return [1, 2, 3].map((_) => 1 + Math.floor(Math.random() * 6));
   },
 };
 

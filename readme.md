@@ -6,5 +6,15 @@ npm install express express-graphql graphql --save
 node server.js
 ```
 
+### Query
+```
+{
+  hello
+  quoteOfTheDay
+  random
+  rollThreeDice
+}
+```
+
 ### ref
 https://qiita.com/shotashimura/items/3f9e04b93e79592030a4
