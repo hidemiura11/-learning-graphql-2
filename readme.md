@@ -13,6 +13,7 @@ node server.js
   quoteOfTheDay
   random
   rollThreeDice
+  rollDice(numDice: 50, numSides: 100)
 }
 ```
 

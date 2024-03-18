@@ -10,6 +10,7 @@ const schema = buildSchema(`
     quoteOfTheDay: String
     random: Float!
     rollThreeDice: [Int]
+    rollDice(numDice: Int!, numSides: Int): [Int]
   }
 `);
 
@@ -31,6 +32,14 @@ const root = {
   rollThreeDice: () => {
     return [1, 2, 3].map((_) => 1 + Math.floor(Math.random() * 6));
   },
+  //クライアント側のクエリから引数の値を受け取る
+  rollDice: ({ numDice, numSides }) => {
+    let output = [];
+    for (var i = 0; i < numDice; i++) {
+      output.push(1 + Math.floor(Math.random() * (numSides || 6)));
+    }
+    return output;
+  }
 };
 
 // Expressでサーバーを立てます
