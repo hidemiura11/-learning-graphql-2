@@ -5,14 +5,40 @@ const { buildSchema } = require('graphql');
 // GraphQLスキーマ言語を記述してスキーマを構築する
 // スキーマはあくまで定義のみで実際のデータ操作は行わない
 const schema = buildSchema(`
+  type RandomDie {
+    numSides: Int!
+    rollOnce: Int!
+    roll(numRolls: Int!): [Int]
+  }
+
   type Query {
     hello: String
     quoteOfTheDay: String
     random: Float!
     rollThreeDice: [Int]
     rollDice(numDice: Int!, numSides: Int): [Int]
+    getDie(numSides: Int): RandomDie
   }
 `);
+
+//リゾルバ関数内の処理をクラス化することも可能です
+class RandomDie {
+  constructor(numSides) {
+    this.numSides = numSides;
+  }
+
+  rollOnce() {
+    return 1 + Math.floor(Math.random() * this.numSides);
+  }
+
+  roll({ numRolls }) {
+    let output = [];
+    for (var i = 0; i < numRolls; i++) {
+      output.push(this.rollOnce());
+    }
+    return output;
+  }
+}
 
 // ルートは、APIエンドポイントごとにリゾルバ関数を提供します
 // リゾルバとは特定のフィールドのデータを返す関数（メソッド）であり、実際のデータ操作を行う部分
@@ -39,6 +65,9 @@ const root = {
       output.push(1 + Math.floor(Math.random() * (numSides || 6)));
     }
     return output;
+  },
+  getDie: ({ numSides }) => {
+    return new RandomDie(numSides || 6);
   }
 };
 

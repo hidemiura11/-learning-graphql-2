@@ -14,6 +14,11 @@ node server.js
   random
   rollThreeDice
   rollDice(numDice: 50, numSides: 100)
+  getDie(numSides: 3) {
+    numSides
+    rollOnce
+    roll(numRolls: 5)
+  }
 }
 ```
 
