@@ -5,6 +5,17 @@ const { buildSchema } = require('graphql');
 // GraphQLスキーマ言語を記述してスキーマを構築する
 // スキーマはあくまで定義のみで実際のデータ操作は行わない
 const schema = buildSchema(`
+  input MessageInput {
+    content: String
+    author: String
+  }
+
+  type Message {
+    id: ID!
+    content: String
+    author: String
+  }
+
   type RandomDie {
     numSides: Int!
     rollOnce: Int!
@@ -18,6 +29,12 @@ const schema = buildSchema(`
     rollThreeDice: [Int]
     rollDice(numDice: Int!, numSides: Int): [Int]
     getDie(numSides: Int): RandomDie
+    getMessage(id: ID!): Message
+  }
+
+  type Mutation {
+    createMessage(input: MessageInput): Message
+    updateMessage(id: ID!, input: MessageInput): Message
   }
 `);
 
@@ -39,6 +56,17 @@ class RandomDie {
     return output;
   }
 }
+
+class Message {
+  constructor(id, { content, author }) {
+    this.id = id;
+    this.content = content;
+    this.author = author;
+  }
+}
+
+// データの入れ物
+let fakeDatabase = {};
 
 // ルートは、APIエンドポイントごとにリゾルバ関数を提供します
 // リゾルバとは特定のフィールドのデータを返す関数（メソッド）であり、実際のデータ操作を行う部分
@@ -68,7 +96,28 @@ const root = {
   },
   getDie: ({ numSides }) => {
     return new RandomDie(numSides || 6);
-  }
+  },
+  getMessage: ({ id }) => {
+    if (!fakeDatabase[id]) {
+      throw new Error('no message exists with id ' + id);
+    }
+    return new Message(id, fakeDatabase[id]);
+  },
+  createMessage: ({ input }) => {
+    // ランダムなIdを生成
+    var id = require('crypto').randomBytes(10).toString('hex');
+
+    fakeDatabase[id] = input;
+    return new Message(id, input);
+  },
+  updateMessage: ({ id, input }) => {
+    if (!fakeDatabase[id]) {
+      throw new Error('no message exists with id ' + id);
+    }
+    // 古いデータの書き換え
+    fakeDatabase[id] = input;
+    return new Message(id, input);
+  },
 };
 
 // Expressでサーバーを立てます

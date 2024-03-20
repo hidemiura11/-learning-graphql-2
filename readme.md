@@ -22,5 +22,41 @@ node server.js
 }
 ```
 
+```
+query {
+  getMessage(id: "a4077910603b05c34e66") {
+    author
+    content
+  }
+}
+```
+
+```
+mutation {
+ createMessage(input: {
+  author: "Hans Meier"
+  content: "German History"
+ }) {
+  id
+ }
+}
+```
+
+```
+mutation {
+  updateMessage(
+    id: "a4077910603b05c34e66"
+    input: {
+      author: "Jhon Smith"
+      content: "British History"
+    }
+  ) {
+    id
+    author
+    content
+  }
+}
+```
+
 ### ref
 https://qiita.com/shotashimura/items/3f9e04b93e79592030a4
